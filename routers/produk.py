@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
+from sqlalchemy import func
 
 from database import get_db
 from models import produk as models_produk
@@ -14,12 +15,18 @@ router = APIRouter(
 
 @router.post("/", response_model=schemas_produk.ProdukResponse, status_code=status.HTTP_201_CREATED)
 def create_produk(produk: schemas_produk.ProdukCreate, db: Session = Depends(get_db)):
-    # Cek dulu apakah kategori_id yang dimasukkan benar-benar ada di tabel kategori
-    kategori_ada = db.query(models_kategori.Kategori).filter(models_kategori.Kategori.id == produk.kategori_id).first()
-    if not kategori_ada:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Kategori ID tersebut tidak ditemukan")
+    # Cari kategori berdasarkan nama (abaikan huruf besar/kecil)
+    kategori = db.query(models_kategori.Kategori).filter(func.lower(models_kategori.Kategori.nama_kategori) == produk.nama_kategori.lower()).first()
+    
+    # Jika kategori belum ada, kembalikan error
+    if not kategori:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Kategori '{produk.nama_kategori}' tidak ditemukan. Silakan buat kategori terlebih dahulu.")
 
-    produk_baru = models_produk.Produk(**produk.model_dump())
+    produk_data = produk.model_dump()
+    produk_data.pop("nama_kategori")
+    produk_data["kategori_id"] = kategori.id
+
+    produk_baru = models_produk.Produk(**produk_data)
     db.add(produk_baru)
     db.commit()
     db.refresh(produk_baru)
@@ -42,7 +49,16 @@ def update_produk(id: int, produk_update: schemas_produk.ProdukCreate, db: Sessi
     if not produk:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produk tidak ditemukan")
     
-    for var, value in vars(produk_update).items():
+    # Cari kategori baru berdasarkan nama
+    kategori = db.query(models_kategori.Kategori).filter(func.lower(models_kategori.Kategori.nama_kategori) == produk_update.nama_kategori.lower()).first()
+    if not kategori:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Kategori '{produk_update.nama_kategori}' tidak ditemukan. Silakan buat kategori terlebih dahulu.")
+
+    update_data = produk_update.model_dump()
+    update_data.pop("nama_kategori")
+    update_data["kategori_id"] = kategori.id
+    
+    for var, value in update_data.items():
         setattr(produk, var, value) if value is not None else None
 
     db.commit()
