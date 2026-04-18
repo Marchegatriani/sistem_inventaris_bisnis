@@ -1,0 +1,22 @@
+# --- Python & Virtual Environment ---
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Environment Variables (Kredensial Database MySQL) ---
+.env
+.env.local
+.env.dev
+.env.prod
+
+# --- IDE & Editor ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Logs & Temp Files ---
+*.log
+*.tmp
