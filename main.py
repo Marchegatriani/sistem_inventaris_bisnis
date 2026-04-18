@@ -6,6 +6,7 @@ from routers import auth as router_auth
 from routers import bahan_baku as router_bahan
 from routers import transaksi_pengeluaran as router_pengeluaran
 from routers import kategori as router_kategori
+from routers import user as router_user
 
 Base.metadata.create_all(bind=engine)
 
@@ -21,7 +22,8 @@ app.include_router(router_transaksi.router)
 app.include_router(router_auth.router)
 app.include_router(router_bahan.router)
 app.include_router(router_pengeluaran.router)
+app.include_router(router_user.router)
 
 @app.get("/")
 def root():
-    return {"message": "Selamat datang di API Manajemen Produk dan Inventaris Bisnis"}
+    return {"message": "Selamat datang di API Manajemen Produk dan Inventaris Bisnis Kerajinan Tangan!"}

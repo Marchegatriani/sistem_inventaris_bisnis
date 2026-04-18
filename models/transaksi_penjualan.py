@@ -14,6 +14,11 @@ class TransaksiPenjualan(Base):
     produk_id = Column(Integer, ForeignKey("produk.id"))
     jumlah_terjual = Column(Integer)
     total_pemasukan = Column(Integer)
+    
+    # Foreign key ke tabel user
+    user_id = Column(Integer, ForeignKey("users.id"))
 
     # Relasi balik ke tabel Produk
     produk = relationship("Produk", back_populates="transaksi_penjualan")
+    # Relasi ke tabel User
+    user = relationship("User", back_populates="transaksi_penjualan")

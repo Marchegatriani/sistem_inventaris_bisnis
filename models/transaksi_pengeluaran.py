@@ -13,5 +13,10 @@ class TransaksiPengeluaran(Base):
     jumlah_dibeli = Column(Integer)
     harga_beli_satuan = Column(Integer)
     total_pengeluaran = Column(Integer)
+    
+    # Foreign key ke tabel user
+    user_id = Column(Integer, ForeignKey("users.id"))
 
     bahan_baku = relationship("BahanBaku", back_populates="transaksi_pengeluaran")
+    # Relasi ke tabel User
+    user = relationship("User", back_populates="transaksi_pengeluaran")

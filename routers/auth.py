@@ -12,20 +12,6 @@ router = APIRouter(
     tags=["Autentikasi User"]
 )
 
-@router.post("/register", response_model=schemas_user.UserResponse, status_code=status.HTTP_201_CREATED)
-def register(user: schemas_user.UserCreate, db: Session = Depends(get_db)):
-    db_user = db.query(models_user.User).filter(models_user.User.username == user.username).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Username sudah terdaftar")
-    
-    hashed_password = get_password_hash(user.password)
-    
-    new_user = models_user.User(username=user.username, hashed_password=hashed_password)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
-
 @router.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(models_user.User).filter(models_user.User.username == form_data.username).first()

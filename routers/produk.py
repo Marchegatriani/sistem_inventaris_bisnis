@@ -7,18 +7,18 @@ from database import get_db
 from models import produk as models_produk
 from models import kategori as models_kategori
 from schemas import produk as schemas_produk
+from auth.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/produk",
-    tags=["Produk Kerajinan"]
+    tags=["Produk Kerajinan"],
+    dependencies=[Depends(get_current_user)]
 )
 
 @router.post("/", response_model=schemas_produk.ProdukResponse, status_code=status.HTTP_201_CREATED)
 def create_produk(produk: schemas_produk.ProdukCreate, db: Session = Depends(get_db)):
-    # Cari kategori berdasarkan nama (abaikan huruf besar/kecil)
     kategori = db.query(models_kategori.Kategori).filter(func.lower(models_kategori.Kategori.nama_kategori) == produk.nama_kategori.lower()).first()
     
-    # Jika kategori belum ada, kembalikan error
     if not kategori:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Kategori '{produk.nama_kategori}' tidak ditemukan. Silakan buat kategori terlebih dahulu.")
 

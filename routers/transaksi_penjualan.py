@@ -6,17 +6,19 @@ from sqlalchemy import func
 from database import get_db
 from models import transaksi_penjualan as models_transaksi
 from models import produk as models_produk
+from models import user as models_user
 from schemas import transaksi_penjualan as schemas_transaksi
 
-from auth.security import oauth2_scheme
+from auth.dependencies import get_current_user
 
 router = APIRouter(
     prefix="/transaksi-penjualan",
-    tags=["Transaksi Penjualan"]
+    tags=["Transaksi Penjualan"],
+    dependencies=[Depends(get_current_user)] # Proteksi semua endpoint di router ini
 )
 
 @router.post("/", response_model=schemas_transaksi.TransaksiPenjualanResponse, status_code=status.HTTP_201_CREATED)
-def create_transaksi(transaksi: schemas_transaksi.TransaksiPenjualanCreate, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+def create_transaksi(transaksi: schemas_transaksi.TransaksiPenjualanCreate, db: Session = Depends(get_db), current_user: models_user.User = Depends(get_current_user)):
     # Cari produk berdasarkan nama, abaikan huruf besar/kecil
     produk = db.query(models_produk.Produk).filter(func.lower(models_produk.Produk.nama_produk) == transaksi.nama_produk.lower()).first()
     
@@ -35,7 +37,8 @@ def create_transaksi(transaksi: schemas_transaksi.TransaksiPenjualanCreate, db: 
     transaksi_baru = models_transaksi.TransaksiPenjualan(
         produk_id=produk.id,
         jumlah_terjual=transaksi.jumlah_terjual,
-        total_pemasukan=total_pemasukan
+        total_pemasukan=total_pemasukan,
+        user_id=current_user.id # <-- SIMPAN ID USER YANG LOGIN
     )
     db.add(transaksi_baru)
     

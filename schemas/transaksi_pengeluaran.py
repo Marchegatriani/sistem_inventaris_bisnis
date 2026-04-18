@@ -16,6 +16,7 @@ class TransaksiPengeluaranCreate(BaseModel):
 class TransaksiPengeluaranResponse(TransaksiPengeluaranBase):
     id: int
     total_pengeluaran: int
+    user_id: int
     waktu_transaksi: datetime
 
     class Config:
