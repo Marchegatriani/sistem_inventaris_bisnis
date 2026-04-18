@@ -12,3 +12,4 @@ class User(Base):
     # Relasi balik untuk melacak transaksi yang dibuat oleh user
     transaksi_penjualan = relationship("TransaksiPenjualan", back_populates="user")
     transaksi_pengeluaran = relationship("TransaksiPengeluaran", back_populates="user")
+    produk = relationship("Produk", back_populates="user")

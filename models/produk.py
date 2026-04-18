@@ -12,11 +12,16 @@ class Produk(Base):
     harga_jual = Column(Integer)
     deskripsi = Column(String(255), nullable=True)
 
+    # Foreign key ke tabel user
+    user_id = Column(Integer, ForeignKey("users.id"))
+
     # Relasi balik ke tabel Kategori
     kategori = relationship("Kategori", back_populates="produk")
     
+    # Relasi ke tabel User
+    user = relationship("User", back_populates="produk")
+
     # Relasi ke tabel Transaksi Penjualan (Satu produk bisa dijual berkali-kali)
     # Nanti kita buat file transaksi_penjualan.py
     # (Tambahkan ini di bagian bawah dalam class Produk)
     transaksi_penjualan = relationship("TransaksiPenjualan", back_populates="produk")
-    # transaksi_penjualan = relationship("TransaksiPenjualan", back_populates="produk")
