@@ -26,3 +26,20 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise credentials_exception
     return user
+
+def get_current_superadmin(current_user: models_user.User = Depends(get_current_user)):
+    if current_user.role != models_user.UserRole.superadmin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Hak akses ditolak. Hanya Super Admin yang diizinkan."
+        )
+    return current_user
+
+def get_current_admin(current_user: models_user.User = Depends(get_current_user)):
+    # Memeriksa apakah user adalah admin atau superadmin
+    if current_user.role not in [models_user.UserRole.superadmin, models_user.UserRole.admin]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Hak akses ditolak. Hanya Super Admin dan Admin yang diizinkan."
+        )
+    return current_user

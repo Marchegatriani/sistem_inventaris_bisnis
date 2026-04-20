@@ -12,7 +12,7 @@ router = APIRouter(
     tags=["Autentikasi User"]
 )
 
-@router.post("/login")
+@router.post("/login", response_model=schemas_user.Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(models_user.User).filter(models_user.User.username == form_data.username).first()
     
@@ -23,6 +23,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    access_token = create_access_token(data={"sub": user.username})
+    access_token = create_access_token(data={"sub": user.username, "role": user.role.value})
     
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "role": user.role
+    }

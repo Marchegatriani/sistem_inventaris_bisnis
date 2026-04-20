@@ -1,6 +1,12 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Enum as SQLAlchemyEnum
 from sqlalchemy.orm import relationship
 from database import Base
+import enum
+
+class UserRole(str, enum.Enum):
+    superadmin = "superadmin"
+    admin = "admin"
+    karyawan = "karyawan"
 
 class User(Base):
     __tablename__ = "users"
@@ -8,6 +14,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, index=True)
     hashed_password = Column(String(255))
+    role = Column(SQLAlchemyEnum(UserRole), default=UserRole.karyawan, nullable=False)
 
     # Relasi balik untuk melacak transaksi yang dibuat oleh user
     transaksi_penjualan = relationship("TransaksiPenjualan", back_populates="user")

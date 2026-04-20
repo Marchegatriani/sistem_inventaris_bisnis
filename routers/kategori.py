@@ -5,12 +5,12 @@ from typing import List
 from database import get_db
 from models import kategori as models_kategori
 from schemas import kategori as schemas_kategori
-from auth.dependencies import get_current_user
+from auth.dependencies import get_current_admin
 
 router = APIRouter(
     prefix="/kategori",
     tags=["Kategori Produk"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_admin)]
 )
 
 @router.post("/", response_model=schemas_kategori.KategoriResponse, status_code=status.HTTP_201_CREATED)

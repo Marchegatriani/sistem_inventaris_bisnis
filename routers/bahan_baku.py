@@ -5,12 +5,12 @@ from typing import List
 from database import get_db
 from models import bahan_baku as models_bahan
 from schemas import bahan_baku as schemas_bahan
-from auth.dependencies import get_current_user
+from auth.dependencies import get_current_admin
 
 router = APIRouter(
     prefix="/bahan-baku",
     tags=["Manajemen Bahan Baku"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_admin)]
 )
 
 @router.post("/", response_model=schemas_bahan.BahanBakuResponse, status_code=status.HTTP_201_CREATED)

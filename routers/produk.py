@@ -8,16 +8,16 @@ from models import produk as models_produk
 from models import kategori as models_kategori
 from models import user as models_user
 from schemas import produk as schemas_produk
-from auth.dependencies import get_current_user
+from auth.dependencies import get_current_admin
 
 router = APIRouter(
     prefix="/produk",
     tags=["Produk Kerajinan"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_admin)]
 )
 
 @router.post("/", response_model=schemas_produk.ProdukResponse, status_code=status.HTTP_201_CREATED)
-def create_produk(produk: schemas_produk.ProdukCreate, db: Session = Depends(get_db), current_user: models_user.User = Depends(get_current_user)):
+def create_produk(produk: schemas_produk.ProdukCreate, db: Session = Depends(get_db), current_user: models_user.User = Depends(get_current_admin)):
     kategori = db.query(models_kategori.Kategori).filter(func.lower(models_kategori.Kategori.nama_kategori) == produk.nama_kategori.lower()).first()
     
     if not kategori:
@@ -46,7 +46,7 @@ def get_produk_by_id(id: int, db: Session = Depends(get_db)):
     return produk
 
 @router.put("/{id}", response_model=schemas_produk.ProdukResponse)
-def update_produk(id: int, produk_update: schemas_produk.ProdukCreate, db: Session = Depends(get_db), current_user: models_user.User = Depends(get_current_user)):
+def update_produk(id: int, produk_update: schemas_produk.ProdukCreate, db: Session = Depends(get_db), current_user: models_user.User = Depends(get_current_admin)):
     produk = db.query(models_produk.Produk).filter(models_produk.Produk.id == id).first()
     if not produk:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produk tidak ditemukan")
