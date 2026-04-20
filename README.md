@@ -1,4 +1,4 @@
-# 🧶 CrochetBiz - API Manajemen Inventaris
+# API Manajemen Inventaris Kerajinan Tangan - Crocheting
 
 Sistem Backend API terintegrasi yang dibangun menggunakan **FastAPI** untuk mendukung digitalisasi operasional bisnis kerajinan tangan (*crochet*). Sistem ini mengotomatisasi pencatatan stok bahan baku, manajemen produk jadi, serta riwayat transaksi penjualan dan pengeluaran secara presisi.
 
@@ -49,7 +49,7 @@ Sistem Backend API terintegrasi yang dibangun menggunakan **FastAPI** untuk mend
 Daftar Endpoint
 <img width="392" height="654" alt="image" src="https://github.com/user-attachments/assets/04dc292a-31cc-42db-906c-b90a089c3102" />
 
-👤 Author
+👤 Author:
 Marche Gatriani Sude - Sistem Informasi, Universitas Hasanuddin
 
 Proyek ini dikembangkan sebagai bagian dari Ujian Tengah Semester (UTS) mata kuliah Pemrograman Web Lanjutan.
